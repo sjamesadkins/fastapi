@@ -1,6 +1,10 @@
 version: '3.9'
 name: fast-api-dev
 
+networks:
+  dev_network:
+    driver: bridge
+
 services:
 
   dev-db:
@@ -12,20 +16,14 @@ services:
       - "5433:5432"
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
-
-  test-db:
-    image: postgres:alpine3.19
-    restart: always
-    env_file:
-      - ./.env
-    ports:
-      - "5433:5432"
-    volumes:
-      - ./scripts:/docker-entrypoint-initdb.d
+    networks:
+      - dev_network
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - dev_network
 
